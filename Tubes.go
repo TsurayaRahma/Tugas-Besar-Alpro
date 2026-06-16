@@ -17,8 +17,8 @@ var listJenis = [5]string{
 }
 
 var data [MAX]Workout
-var n int
-var nextID int = 1
+var n int				// Menyimpan jumlah data yang saat ini terisi di dalam array
+var nextID int = 1		// Auto-increment untuk ID workout agar selalu unik dan berurutan
 
 // ================= MENU 1 =================
 func tambahWorkout() {
@@ -29,6 +29,7 @@ func tambahWorkout() {
 
 	var w Workout
 
+	//Isi ID otomatis
 	w.id = nextID
 	nextID++
 
@@ -97,11 +98,12 @@ func tampilkanWorkout() {
 	}
 
 	fmt.Println("==============================================================")
-	fmt.Println("ID | Nama | Jenis | Durasi | Kalori | Tanggal")
+	fmt.Printf("%-4s | %-15s | %-12s | %-7s | %-7s | %-12s\n",
+		"ID", "Nama", "Jenis", "Durasi", "Kalori", "Tanggal")
 	fmt.Println("==============================================================")
 
 	for i = 0; i < n; i++ {
-		fmt.Printf("%d | %s | %s | %d | %d | %s\n",
+		fmt.Printf("%-4d | %-15s | %-12s | %-7d | %-7d | %-12s\n",
 			data[i].id,
 			data[i].nama,
 			data[i].jenis,
@@ -143,7 +145,7 @@ func ubahWorkout() {
 				fmt.Println("2. Strength")
 				fmt.Println("3. Flexibility")
 				fmt.Println("4. HIIT")
-				fmt.Print("Masukkan angka pilihan (1-4): ")
+				fmt.Print("Masukkan angka (1-4): ")
 				fmt.Scanln(&pilihanJenis)
 
 				if pilihanJenis < 1 || pilihanJenis > 4 {
@@ -239,9 +241,14 @@ func CariJenisOlahragaSequential() {
 		if data[i].jenis == jenis {
 			if !ketemu {
 				fmt.Println("Data ditemukan :")
+				fmt.Println("==============================================================")
+				fmt.Printf("%-4s | %-15s | %-12s | %-7s | %-7s | %-12s\n",
+					"ID", "Nama", "Jenis", "Durasi", "Kalori", "Tanggal")
+				fmt.Println("==============================================================")
+
 			}
 
-			fmt.Printf("%d | %s | %s | %d | %d | %s\n",
+			fmt.Printf("%-4d | %-15s | %-12s | %-7d | %-7d | %-12s\n",
 				data[i].id,
 				data[i].nama,
 				data[i].jenis,
@@ -270,7 +277,6 @@ func sortKalori() {
 	fmt.Print("Pilih: ")
 	fmt.Scanln(&pilihan)
 
-	// validasi dikit biar aman
 	if pilihan != 1 && pilihan != 2 {
 		fmt.Println("Pilihan tidak valid")
 		return
@@ -278,21 +284,23 @@ func sortKalori() {
 
 	// INSERTION SORT
 	for i = 1; i < n; i++ {
-		key = data[i]
+		key = data[i] 			// Menyimpan elemen yang akan disisipkan
 		j = i - 1
 
-		if pilihan == 1 { // ascending
+		if pilihan == 1 { 
+			// Ascending: Menggeser elemen yang lebih besar dari 'key' ke arah kanan
 			for j >= 0 && data[j].kalori > key.kalori {
 				data[j+1] = data[j]
 				j--
 			}
-		} else { // descending
+		} else { 
+			// Descending: Menggeser elemen yang lebih kecil dari 'key' ke arah kanan
 			for j >= 0 && data[j].kalori < key.kalori {
 				data[j+1] = data[j]
 				j--
 			}
 		}
-
+		// Menempatkan 'key' pada posisi kosong yang tepat
 		data[j+1] = key
 	}
 
@@ -345,43 +353,48 @@ func CariJenisOlahragaBinary() {
 		tengah = (kiri + kanan) / 2
 
 		if data[tengah].jenis == jenis {
-			ketemu = true
+			ketemu = true		//Ketemu ditengah
 		} else if data[tengah].jenis < jenis {
-			kiri = tengah + 1
+			kiri = tengah + 1	// Cari di belahan sebelah kanan
 		} else {
-			kanan = tengah - 1
+			kanan = tengah - 1	// Cari di belahan sebelah kiri
 		}
 	}
 
 	if ketemu {
 		fmt.Println("Data ditemukan :")
 
+		fmt.Println("==============================================================")
+		fmt.Printf("%-4s | %-15s | %-12s | %-7s | %-7s | %-12s\n",
+			"ID", "Nama", "Jenis", "Durasi", "Kalori", "Tanggal")
+		fmt.Println("==============================================================")
+
 		// tampilkan SEMUA yang jenisnya sama
 		
 		// ke kiri
 		i := tengah
 		for i >= 0 && data[i].jenis == jenis {
-			fmt.Printf("%d | %s | %s | %d | %d | %s\n",
+			fmt.Printf("%-4d | %-15s | %-12s | %-7d | %-7d | %-12s\n",
 				data[i].id,
 				data[i].nama,
 				data[i].jenis,
 				data[i].durasi,
 				data[i].kalori,
 				data[i].tanggal)
-			i--
+			i-- //Karena ke kiri
 		}
 
 		// ke kanan
 		i = tengah + 1
 		for i < n && data[i].jenis == jenis {
-			fmt.Printf("%d | %s | %s | %d | %d | %s\n",
+			fmt.Printf("%-4d | %-15s | %-12s | %-7d | %-7d | %-12s\n",
 				data[i].id,
 				data[i].nama,
 				data[i].jenis,
 				data[i].durasi,
 				data[i].kalori,
 				data[i].tanggal)
-			i++
+			i++ // Karena ke kanan
 		}
 
 	} else {
@@ -396,6 +409,7 @@ func aktivitasTerakhir() {
 	var i int
 	var mulai int
 
+	//Tentukan indeks awal print data
 	if n <= 10 {
 		mulai = 0
 	} else {
@@ -403,9 +417,13 @@ func aktivitasTerakhir() {
 	}
 
 	fmt.Println("10 Aktivitas Terakhir")
+	fmt.Println("================================================================================")
+	fmt.Printf("%-4s | %-15s | %-12s | %-7s | %-7s | %-12s\n",
+		"ID", "Nama", "Jenis", "Durasi", "Kalori", "Tanggal")
+	fmt.Println("================================================================================")
 
 	for i = mulai; i < n; i++ {
-		fmt.Printf("%d | %s | %s | %d | %d | %s\n",
+		fmt.Printf("%-4d | %-15s | %-12s | %-7d | %-7d | %-12s\n",
 			data[i].id,
 			data[i].nama,
 			data[i].jenis,
