@@ -4,13 +4,8 @@ import "fmt"
 
 const MAX int = 100
 type Workout struct {
-	id      int
-	nama    string
-	jenis   string
-	durasi  int
-	kalori  int
-	tanggal string
-	aktif   bool
+	id, durasi, kalori int
+	nama, jenis,tanggal string
 }
 
 var listJenis = [5]string{
@@ -25,7 +20,7 @@ var data [MAX]Workout
 var n int
 var nextID int = 1
 
-//Menu 1
+// ================= MENU 1 =================
 func tambahWorkout() {
 	if n >= MAX {
 		fmt.Println("Data penuh")
@@ -37,35 +32,54 @@ func tambahWorkout() {
 	w.id = nextID
 	nextID++
 
+	// Input nama
 	fmt.Print("Nama latihan        : ")
 	fmt.Scanln(&w.nama)
 
+	// Pilih jenis olahraga (validasi)
 	var pilihanJenis int
-    for pilihanJenis < 1 || pilihanJenis > 4 {
-        fmt.Println("\nJenis Olahraga:")
-        fmt.Println("1. Cardio")
-        fmt.Println("2. Strength")
-        fmt.Println("3. Flexibility")
-        fmt.Println("4. HIIT")
-        fmt.Print("Masukkan angka pilihan (1-4): ")
-        fmt.Scanln(&pilihanJenis)
-        
-        if pilihanJenis < 1 || pilihanJenis > 4 {
-            fmt.Println("Pilihan tidak valid, silakan coba lagi.")
-        }
-    }
+	pilihanJenis = 0
+
+	for pilihanJenis < 1 || pilihanJenis > 4 {
+		fmt.Println("\nJenis Olahraga:")
+		fmt.Println("1. Cardio")
+		fmt.Println("2. Strength")
+		fmt.Println("3. Flexibility")
+		fmt.Println("4. HIIT")
+		fmt.Print("Masukkan angka pilihan (1-4): ")
+		fmt.Scanln(&pilihanJenis)
+
+		if pilihanJenis < 1 || pilihanJenis > 4 {
+			fmt.Println("Pilihan tidak valid, silakan coba lagi.")
+		}
+	}
 	w.jenis = listJenis[pilihanJenis]
 
-	fmt.Print("Durasi (menit)      : ")
-	fmt.Scanln(&w.durasi)
+	// Input durasi workout (harus > 0)
+	w.durasi = 0
+	for w.durasi <= 0 {
+		fmt.Print("Durasi (menit) > 0 : ")
+		fmt.Scanln(&w.durasi)
 
-	fmt.Print("Jumlah kalori       : ")
-	fmt.Scanln(&w.kalori)
+		if w.durasi <= 0 {
+			fmt.Println("Durasi harus lebih dari 0.")
+		}
+	}
 
+	// Input kalori (harus > 0)
+	w.kalori = 0
+	for w.kalori <= 0 {
+		fmt.Print("Jumlah kalori > 0  : ")
+		fmt.Scanln(&w.kalori)
+
+		if w.kalori <= 0 {
+			fmt.Println("Kalori harus lebih dari 0.")
+		}
+	}
+
+	// Input tanggal
 	fmt.Print("Tanggal             : ")
 	fmt.Scanln(&w.tanggal)
-
-	w.aktif = true
 
 	data[n] = w
 	n++
@@ -73,30 +87,33 @@ func tambahWorkout() {
 	fmt.Println("Workout berhasil ditambahkan")
 }
 
-//Menu 2
+//==========================Menu 2=======================
 func tampilkanWorkout() {
 	var i int
+
+	if n == 0 {
+		fmt.Println("Belum ada data workout")
+		return
+	}
 
 	fmt.Println("==============================================================")
 	fmt.Println("ID | Nama | Jenis | Durasi | Kalori | Tanggal")
 	fmt.Println("==============================================================")
 
 	for i = 0; i < n; i++ {
-		if data[i].aktif {
-			fmt.Printf("%d | %s | %s | %d | %d | %s\n",
-				data[i].id,
-				data[i].nama,
-				data[i].jenis,
-				data[i].durasi,
-				data[i].kalori,
-				data[i].tanggal)
-		}
+		fmt.Printf("%d | %s | %s | %d | %d | %s\n",
+			data[i].id,
+			data[i].nama,
+			data[i].jenis,
+			data[i].durasi,
+			data[i].kalori,
+			data[i].tanggal)
 	}
 
 	fmt.Println("==============================================================")
 }
 
-// Menu 3
+// =================================Menu 3==============================
 func ubahWorkout() {
 	var id int
 	var i int
@@ -107,24 +124,59 @@ func ubahWorkout() {
 
 	ketemu = false
 
+	//SEQUENTIAL SEARCH
 	for i = 0; i < n; i++ {
-		if data[i].id == id && data[i].aktif {
+		if data[i].id == id {
 			ketemu = true
 
+			// Nama
 			fmt.Print("Nama baru           : ")
-			fmt.Scan(&data[i].nama)
+			fmt.Scanln(&data[i].nama)
 
-			fmt.Print("Jenis baru          : ")
-			fmt.Scan(&data[i].jenis)
+			// Jenis (validasi seperti tambah)
+			var pilihanJenis int
+			pilihanJenis = 0
 
-			fmt.Print("Durasi baru         : ")
-			fmt.Scan(&data[i].durasi)
+			for pilihanJenis < 1 || pilihanJenis > 4 {
+				fmt.Println("\nJenis Olahraga:")
+				fmt.Println("1. Cardio")
+				fmt.Println("2. Strength")
+				fmt.Println("3. Flexibility")
+				fmt.Println("4. HIIT")
+				fmt.Print("Masukkan angka pilihan (1-4): ")
+				fmt.Scanln(&pilihanJenis)
 
-			fmt.Print("Kalori baru         : ")
-			fmt.Scan(&data[i].kalori)
+				if pilihanJenis < 1 || pilihanJenis > 4 {
+					fmt.Println("Pilihan tidak valid, silakan coba lagi.")
+				}
+			}
+			data[i].jenis = listJenis[pilihanJenis]
 
+			// Durasi
+			data[i].durasi = 0
+			for data[i].durasi <= 0 {
+				fmt.Print("Durasi baru > 0     : ")
+				fmt.Scanln(&data[i].durasi)
+
+				if data[i].durasi <= 0 {
+					fmt.Println("Durasi harus lebih dari 0.")
+				}
+			}
+
+			// Kalori
+			data[i].kalori = 0
+			for data[i].kalori <= 0 {
+				fmt.Print("Kalori baru > 0     : ")
+				fmt.Scanln(&data[i].kalori)
+
+				if data[i].kalori <= 0 {
+					fmt.Println("Kalori harus lebih dari 0.")
+				}
+			}
+
+			// Tanggal
 			fmt.Print("Tanggal baru        : ")
-			fmt.Scan(&data[i].tanggal)
+			fmt.Scanln(&data[i].tanggal)
 
 			fmt.Println("Data berhasil diubah")
 		}
@@ -135,7 +187,7 @@ func ubahWorkout() {
 	}
 }
 
-// Menu 4
+// ===========================Menu 4==========================
 func hapusWorkout() {
 	var id int
 	var i int
@@ -151,23 +203,28 @@ func hapusWorkout() {
 		if data[i].id == id {
 			ketemu = true
 
+			// geser array ke kiri
 			for j = i; j < n-1; j++ {
 				data[j] = data[j+1]
 			}
 
 			n--
-			fmt.Println("Data berhasil dihapus")
+			
+			//hentikan loop
+			i = n
 		}
 	}
 
-	if !ketemu {
+	if ketemu {
+		fmt.Println("Data berhasil dihapus")
+	} else {
 		fmt.Println("Data tidak ditemukan")
 	}
 }
 
 
-// Menu 5
-func CariJenisOlahraga() {
+// =================Menu 5==========================
+func CariJenisOlahragaSequential() {
 	var jenis string
 	var i int
 	var ketemu bool
@@ -177,8 +234,9 @@ func CariJenisOlahraga() {
 
 	ketemu = false
 
+	//SEQUENTIAL SEARCH
 	for i = 0; i < n; i++ {
-		if data[i].jenis == jenis && data[i].aktif {
+		if data[i].jenis == jenis {
 			if !ketemu {
 				fmt.Println("Data ditemukan :")
 			}
@@ -201,31 +259,83 @@ func CariJenisOlahraga() {
 }
 
 
-// Menu 6
-func sortJenis() {
+// =========================Menu 6===========================
+func sortKalori() {
 	var i, j int
+	var key Workout
+	var pilihan int
+
+	fmt.Println("1. Ascending (kecil -> besar)")
+	fmt.Println("2. Descending (besar -> kecil)")
+	fmt.Print("Pilih: ")
+	fmt.Scanln(&pilihan)
+
+	// validasi dikit biar aman
+	if pilihan != 1 && pilihan != 2 {
+		fmt.Println("Pilihan tidak valid")
+		return
+	}
+
+	// INSERTION SORT
+	for i = 1; i < n; i++ {
+		key = data[i]
+		j = i - 1
+
+		if pilihan == 1 { // ascending
+			for j >= 0 && data[j].kalori > key.kalori {
+				data[j+1] = data[j]
+				j--
+			}
+		} else { // descending
+			for j >= 0 && data[j].kalori < key.kalori {
+				data[j+1] = data[j]
+				j--
+			}
+		}
+
+		data[j+1] = key
+	}
+
+	fmt.Println("Data berhasil di-sort berdasarkan kalori")
+
+	tampilkanWorkout()
+}
+
+// SORTING JENIS (Selection Sort - Ascending) (INI BUKAN MENU)
+func sortJenis() {
+	var i, j, idxMin int
 	var temp Workout
 
 	for i = 0; i < n-1; i++ {
-		for j = 0; j < n-1-i; j++ {
-			if data[j].jenis > data[j+1].jenis {
-				temp = data[j]
-				data[j] = data[j+1]
-				data[j+1] = temp
+		idxMin = i // anggap elemen ke-i adalah yang paling kecil
+
+		// cari index dengan jenis paling kecil di sisa array
+		for j = i + 1; j < n; j++ {
+			if data[j].jenis < data[idxMin].jenis {
+				idxMin = j
 			}
 		}
+
+		// tukar posisi
+		temp = data[i]
+		data[i] = data[idxMin]
+		data[idxMin] = temp
 	}
+
+	fmt.Println("Data berhasil di-sort berdasarkan jenis (Selection Sort)")
 }
 
-
-// Menu 7
-func binarySearch() {
+// ===================Menu 7=========================
+func CariJenisOlahragaBinary() {
 	var jenis string
 	var kiri, kanan, tengah int
 	var ketemu bool
 
 	fmt.Print("Cari jenis olahraga : ")
 	fmt.Scanln(&jenis)
+
+	// PENTING: sort dulu sebelum binary search
+	sortJenis()
 
 	kiri = 0
 	kanan = n - 1
@@ -246,13 +356,33 @@ func binarySearch() {
 	if ketemu {
 		fmt.Println("Data ditemukan :")
 
-		fmt.Printf("%d | %s | %s | %d | %d | %s\n",
-			data[tengah].id,
-			data[tengah].nama,
-			data[tengah].jenis,
-			data[tengah].durasi,
-			data[tengah].kalori,
-			data[tengah].tanggal)
+		// tampilkan SEMUA yang jenisnya sama
+		
+		// ke kiri
+		i := tengah
+		for i >= 0 && data[i].jenis == jenis {
+			fmt.Printf("%d | %s | %s | %d | %d | %s\n",
+				data[i].id,
+				data[i].nama,
+				data[i].jenis,
+				data[i].durasi,
+				data[i].kalori,
+				data[i].tanggal)
+			i--
+		}
+
+		// ke kanan
+		i = tengah + 1
+		for i < n && data[i].jenis == jenis {
+			fmt.Printf("%d | %s | %s | %d | %d | %s\n",
+				data[i].id,
+				data[i].nama,
+				data[i].jenis,
+				data[i].durasi,
+				data[i].kalori,
+				data[i].tanggal)
+			i++
+		}
 
 	} else {
 		fmt.Println("Data tidak ditemukan")
@@ -260,51 +390,8 @@ func binarySearch() {
 }
 
 
-// Menu 8
-func selectionSortDurasi() {
-	var i, j, idx int
-	var temp Workout
 
-	for i = 0; i < n-1; i++ {
-		idx = i
-
-		for j = i + 1; j < n; j++ {
-			if data[j].durasi < data[idx].durasi {
-				idx = j
-			}
-		}
-
-		temp = data[i]
-		data[i] = data[idx]
-		data[idx] = temp
-	}
-
-	fmt.Println("Data berhasil diurutkan berdasarkan durasi")
-}
-
-
-// Menu 9
-func insertionSortKalori() {
-	var i, j int
-	var temp Workout
-
-	for i = 1; i < n; i++ {
-		temp = data[i]
-		j = i - 1
-
-		for j >= 0 && data[j].kalori > temp.kalori {
-			data[j+1] = data[j]
-			j--
-		}
-
-		data[j+1] = temp
-	}
-
-	fmt.Println("Data berhasil diurutkan berdasarkan kalori")
-}
-
-
-// Menu 10
+// ==========================Menu 8=====================
 func aktivitasTerakhir() {
 	var i int
 	var mulai int
@@ -328,6 +415,7 @@ func aktivitasTerakhir() {
 	}
 }
 
+// ==========================Menu 9=====================
 func totalKalori() {
 	var i int
 	var total int
@@ -335,9 +423,7 @@ func totalKalori() {
 	total = 0
 
 	for i = 0; i < n; i++ {
-		if data[i].aktif {
-			total = total + data[i].kalori
-		}
+		total = total + data[i].kalori
 	}
 
 	fmt.Println("Total kalori terbakar =", total)
@@ -345,20 +431,18 @@ func totalKalori() {
 
 func menu() {
     fmt.Println()
-    fmt.Println("===== APLIKASI WORKOUT =====")
+    fmt.Println("===== APLIKASI TRACKING WORKOUT =====")
     fmt.Println("1. Tambah Workout")
     fmt.Println("2. Tampilkan Workout")
     fmt.Println("3. Ubah Workout")
     fmt.Println("4. Hapus Workout")
-    fmt.Println("5. Sequential Search (Cari Jenis)")
-    fmt.Println("6. Urutkan Berdasarkan Jenis Olahraga") 
-    fmt.Println("7. Binary Search (Cari Jenis Terurut)")
-    fmt.Println("8. Sort Durasi")
-    fmt.Println("9. Sort Kalori")
-    fmt.Println("10. 10 Aktivitas Terakhir")
-    fmt.Println("11. Total Kalori")
+    fmt.Println("5. Cari Jenis Olahraga (Sequential)")
+    fmt.Println("6. Sorting Kalori") 
+    fmt.Println("7. Cari Jenis Olahraga (Binary)")
+    fmt.Println("8. Aktivitas Terakhir")
+    fmt.Println("9. Total Kalori")
     fmt.Println("0. Keluar")
-    fmt.Println("============================")
+    fmt.Println("======================================")
 }
 
 func main() {
@@ -379,20 +463,20 @@ func main() {
         } else if pilih == 4 {
             hapusWorkout()
         } else if pilih == 5 {
-            CariJenisOlahraga() 
+            CariJenisOlahragaSequential() 
         } else if pilih == 6 {
-            sortJenis()        
-            fmt.Println("Data berhasil diurutkan berdasarkan jenis")
+            sortKalori()
         } else if pilih == 7 {
-            binarySearch()      
+            CariJenisOlahragaBinary()      
         } else if pilih == 8 {
-            selectionSortDurasi()
-        } else if pilih == 9 {
-            insertionSortKalori()
-        } else if pilih == 10 {
             aktivitasTerakhir()
-        } else if pilih == 11 {
+        } else if pilih == 9 {
             totalKalori()
-        } 
+        } else if pilih == 0 {
+			fmt.Println("Program Selesai")
+			return
+		} else {
+			fmt.Println("Pilihan tidak valid")
+		}
 	}
 }
